@@ -1,9 +1,9 @@
 {
-  "title": "Shea's Blog",
+  "title": "Shea Leslein",
   "url": "https://shealeslein.com/",
-  "description": "I am writing about my experiences as a naval navel-gazer.",
+  "description": "Programmer, Father, Husband, Disciple of Jesus",
   "feed": {
-    "subtitle": "I am writing about my experiences as a naval navel-gazer.",
+    "subtitle": "Programmer, Father, Husband, Disciple of Jesus",
     "filename": "feed.xml",
     "path": "/feed/feed.xml",
     "id": "https://shealeslein.com/"
