@@ -7,6 +7,7 @@
   --navy: #17050f;
   --blue: #082840;
   --white: #fff;
+  --primary: #189ab4;
 }
 * {
   box-sizing: border-box;
@@ -196,7 +197,7 @@ pre {
   font-size: 0.625em; /* 10px /16 */
   padding: 2px 4px;
   margin-left: 0.8em; /* 8px /10 */
-  background-color: var(--red);
+  background-color: var(--primary);
   color: var(--white);
   border-radius: 0.25em; /* 3px /12 */
   text-decoration: none;
