@@ -26,7 +26,7 @@ p:last-child {
 p,
 .tmpl-post li,
 img {
-  max-width: 37.5em; /* 600px /16 */
+  max-width: 48rem;
 }
 p,
 .tmpl-post li {
@@ -40,6 +40,11 @@ a[href]:visited {
 }
 main {
   padding: 1rem;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin: auto;
+  max-width: 48rem;
 }
 main :first-child {
   margin-top: 0;
