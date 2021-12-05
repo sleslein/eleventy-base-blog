@@ -1,10 +1,6 @@
 ---
-layout: layouts/post.njk
+layout: '../../layouts/BaseLayout.astro'
 title: About Me
-templateClass: tmpl-post
-eleventyNavigation:
-  key: About Me
-  order: 2
 ---
 
 Hi! I'm Shea. I'm a born and raised Iowan living in foreign lands, aka, Chicagoland. Since graduating from Iowa State Univerity, I've devoted myself to a life as a software engineer, father, husband, and follower of Jesus. It's all busy, but I wouldn't change it for the world!
