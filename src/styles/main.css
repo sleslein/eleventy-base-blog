@@ -45,6 +45,8 @@ header h1 a {
     display: inline-block;
     margin-right: 1em;
     font-size: 1.25em;
+    border-bottom: solid 2px transparent;
+
 }
 
 .nav-item:hover {
