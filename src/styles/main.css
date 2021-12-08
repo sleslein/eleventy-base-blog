@@ -55,3 +55,9 @@ header h1 a {
     text-decoration: none;
     color:black;
 }
+
+main {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 3rem;
+}
