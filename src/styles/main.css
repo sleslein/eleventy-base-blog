@@ -63,3 +63,17 @@ main {
     margin: 0 auto;
     padding: 0 3rem;
 }
+
+
+
+code {
+    display: inline-block;
+    background-color: #eaeff5;
+    padding: 0 .25rem;
+}
+
+pre code {
+    display: block;
+    padding: .5rem;
+    margin: .5rem 0;
+}
