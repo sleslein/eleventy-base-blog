@@ -1,7 +1,53 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
+import PostTag from '../../components/PostTag.astro';
+const posts = Astro.fetchContent('./*.md');
+
+function sortEvents(e1, e2) {
+    return e1.date <e2.date ? 1 : -1;
+}
+
+function formatDate(date) {
+    const options = { year: 'numeric', month: 'long', day: "2-digit" };
+    const formatter = new Intl.DateTimeFormat('en-US', options);
+    return formatter.format(date);
+}
+
 ---
 
+<style>
+    .post-list li {
+        list-style: none;
+        display: flex;
+        align-items: baseline;
+    }
+    .post-list a {
+        color: black;
+    }
+
+    .post-list .date {
+        padding: 0 .5rem;
+        font-size: .825rem;
+    }
+</style>
+
 <BaseLayout>
- <h1>posts go here</h1>
+    <h1>Blog</h1>
+    <ol class="post-list">
+        {
+            posts.sort(sortEvents).map((post) => {
+                return (
+                    <li>
+                        <h2><a href={`${post.url}`}>{post.title}</a></h2>
+                        <span class="date">{formatDate(post.date)}</span>
+                        {post.tags.map((tag) => {
+                            return (
+                                <PostTag>{tag}</PostTag>
+                            );
+                        })}
+                    </li>
+                )
+            })
+        }
+    </ol>
 </BaseLayout>

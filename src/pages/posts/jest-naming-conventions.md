@@ -4,6 +4,7 @@ description: My opinions of conventions teams should adopt when using Jest.
 date: 2020-03-26
 tags:
  - programming
+ - faith
 layout: ../../layouts/BaseLayout.astro
 ---
 
