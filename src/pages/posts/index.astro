@@ -8,26 +8,38 @@ function sortEvents(e1, e2) {
 }
 
 function formatDate(date) {
-    const options = { year: 'numeric', month: 'long', day: "2-digit" };
+    const options = { year: 'numeric', month: 'short', day: "2-digit", };
+    const dt = new Date(date)
     const formatter = new Intl.DateTimeFormat('en-US', options);
-    return formatter.format(date);
+    return formatter.format(dt);
 }
 
 ---
 
 <style>
+    h2 {
+        margin:0;
+    }
+
+    ol {
+        padding-inline-start: 0;
+    }
+
     .post-list li {
         list-style: none;
         display: flex;
         align-items: baseline;
+        padding: .25rem 0;
     }
     .post-list a {
         color: black;
+        font-weight: 700;
     }
 
     .post-list .date {
-        padding: 0 .5rem;
+        padding: 0 .5rem 0 1rem;
         font-size: .825rem;
+        text-transform: uppercase;
     }
 </style>
 
@@ -38,7 +50,7 @@ function formatDate(date) {
             posts.sort(sortEvents).map((post) => {
                 return (
                     <li>
-                        <h2><a href={`${post.url}`}>{post.title}</a></h2>
+                        <a href={`${post.url}`}>{post.title}</a>
                         <span class="date">{formatDate(post.date)}</span>
                         {post.tags.map((tag) => {
                             return (

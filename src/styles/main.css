@@ -13,7 +13,7 @@ body {
 /* Header */
 header {
     border-top: 10px solid var(--primary);
-    padding: 1rem;
+    padding: 0 1rem;
     display: flex;
     align-items: center;
 }
