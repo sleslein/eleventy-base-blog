@@ -1,0 +1,29 @@
+---
+import PostListItem from './PostListItem.astro'
+
+export interface PostList { posts: typeof PostListItem[] };
+
+const { posts } = Astro.props
+posts.sort(sortByDate);
+function sortByDate(e1, e2) {
+    return e1.date <e2.date ? 1 : -1;
+}
+
+---
+
+<style>
+    ol {
+        padding-inline-start: 0;
+        list-style: none;
+    }
+</style>
+
+<ol>
+    {
+        posts.map((post) => {
+            return (
+                <PostListItem post={post} />
+            )
+        })
+    }
+</ol>

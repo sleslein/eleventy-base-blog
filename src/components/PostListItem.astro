@@ -1,0 +1,52 @@
+---
+import PostTag from './PostTag.astro';
+
+export interface PostListItem {
+    url: string;
+    title: string;
+    date: string;
+    tags?: string[];
+}
+
+function formatDate(date) {
+    const options = { year: "numeric", month: 'short', day: "numeric", } as const;
+    const dt = new Date(date)
+    const formatter = new Intl.DateTimeFormat('en-US', options);
+    return formatter.format(dt);
+}
+const { post } = Astro.props
+---
+
+<style>
+    h2 {
+        margin:0;
+    }
+    li {
+        list-style: none;
+        display: flex;
+        align-items: baseline;
+        padding: .25rem 0;
+    }
+    a {
+        color: black;
+        font-weight: 700;
+    }
+    a:hover {
+        color: var(--primary)
+    }
+    .date {
+        padding: 0 .5rem 0 1rem;
+        font-size: .825rem;
+        text-transform: uppercase;
+    }
+</style>
+
+<li>
+    <a href={`${post.url}`}>{post.title}</a>
+    <span class="date">{formatDate(post.date)}</span>
+    {post?.tags.map((tag) => {
+        return (
+            <PostTag>{tag}</PostTag>
+        );
+    })}
+</li>

@@ -1,6 +1,7 @@
 :root {
     --white: #fff;
     --primary: #189ab4;
+    --black: #010;
 }
 
 html,
@@ -8,6 +9,13 @@ body {
     padding: 0;
     margin: 0;
     font-family: system-ui, sans-serif;
+}
+a {
+    color:  var(--black);
+}
+
+a:hover {
+    color: var(--primary);
 }
 
 /* Header */
@@ -30,7 +38,8 @@ header h1 {
     font-size: 2em; 
 }
   
-header h1 a {
+header h1 a,
+header h1 a:hover {
     text-decoration: none;
     color:black;
 }
@@ -46,7 +55,6 @@ header h1 a {
     margin-right: 1em;
     font-size: 1.25em;
     border-bottom: solid 2px transparent;
-
 }
 
 .nav-item:hover {
@@ -63,8 +71,6 @@ main {
     margin: 0 auto;
     padding: 0 3rem;
 }
-
-
 
 code {
     display: inline-block;
