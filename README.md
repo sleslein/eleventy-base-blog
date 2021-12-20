@@ -1,12 +1,7 @@
-# Astro Starter Kit: Minimal
+# README
+[![Netlify Status](https://api.netlify.com/api/v1/badges/18059148-1136-41a4-ac34-9b5d2acc3a3e/deploy-status)](https://app.netlify.com/sites/silly-hugle-b24010/deploys)
 
-```
-npm init astro -- --template minimal
-```
-
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+This site is built using [Astro](https://astro.build)
 
 ## 🚀 Project Structure
 
@@ -37,7 +32,3 @@ All commands are run from the root of the project, from a terminal:
 | `npm run dev`     | Starts local dev server at `localhost:3000`  |
 | `npm run build`   | Build your production site to `./dist/`      |
 | `npm run preview` | Preview your build locally, before deploying |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://github.com/withastro/astro) or jump into our [Discord server](https://astro.build/chat).
