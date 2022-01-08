@@ -1,13 +1,10 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
 import PostList from '@components/PostList.astro'
+import { sortPostByDate } from '@utils/index.ts';
 
-const posts = Astro.fetchContent('./*.md');
-posts.sort(sortByDate);
-
-function sortByDate(e1, e2) {
-    return e1.date <e2.date ? 1 : -1;
-}
+const posts = Astro.fetchContent('../../posts/*.md');
+posts.sort(sortPostByDate);
 
 ---
 

@@ -1,13 +1,12 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
 import PostList from '@components/PostList.astro';
+import { sortPostByDate } from '@utils/index.ts';
 
-const posts = Astro.fetchContent('./posts/*.md');
-posts.sort(sortByDate)
+const posts = Astro.fetchContent('../posts/*.md');
+posts.sort(sortPostByDate)
 const recentPosts = posts.slice(0,3);
-function sortByDate(e1, e2) {
-    return e1.date <e2.date ? 1 : -1;
-}
+
 ---
 <BaseLayout>
     <h1>Recent Posts</h1>

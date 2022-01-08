@@ -4,7 +4,7 @@ description: A simple function for killing processes listening to a specific por
 date: 2020-04-22
 tags:
  - programming
-layout: ../../layouts/BaseLayout.astro
+# layout: ../../layouts/BaseLayout.astro
 ---
 
 As a front-end web developer I'm constantly starting and stopping my local webpack dev server. Starting the server is as easy as `yarn start`. Node starts up, and I'm off to the races. Stopping is easy too, `ctrl + c`. Well, stopping is easy so long as I have the terminal I started the process available. When I don't, I need to find the process that is listening to the port and close it.  

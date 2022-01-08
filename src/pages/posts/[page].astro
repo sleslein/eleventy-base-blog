@@ -1,0 +1,45 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro'
+import { getPostFileName, sortPostByDate, formatDate } from '@utils/index.ts';
+import metaData from '../../data/metadata.json'
+
+
+export async function getStaticPaths({rss}) {
+  const allPosts = Astro.fetchContent('../../posts/*.md');
+  const sortedPosts = allPosts.sort(sortPostByDate);
+  // Generate an RSS feed from this collection
+  rss({
+    // The RSS Feed title, description, and custom metadata.
+    title: metaData.title,
+    description: metaData.description,
+    // The list of items for your RSS feed, sorted.
+    items: sortedPosts.map((post) => { 
+      return {
+        title: post.title,
+        description: post.description,
+        link: `posts/${getPostFileName(post)}`,
+        pubDate: post.date,
+      }
+    }),
+    dest: '/feed/feed.xml'
+  });
+  // Return your paths
+  const result = sortedPosts.map((p) => {
+    const page = getPostFileName(p);
+    return { 
+      params: { page },
+      props: { post: p }  
+      }
+  });
+  return result;
+}
+
+const { post } = Astro.props;
+const { Content, title, date } = post;
+
+---
+<BaseLayout>
+  <h1>{title}</h1>
+  <p>{formatDate(date)}</p>
+  <Content />
+</BaseLayout>
