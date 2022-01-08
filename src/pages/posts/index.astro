@@ -1,0 +1,21 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro'
+import PostList from '@components/PostList.astro'
+import { sortPostByDate } from '@utils/index.ts';
+
+const posts = Astro.fetchContent('../../posts/*.md');
+posts.sort(sortPostByDate);
+
+---
+
+<style>
+    ol {
+        padding-inline-start: 0;
+        list-style: none;
+    }
+</style>
+
+<BaseLayout>
+    <h1>Blog</h1>
+    <PostList posts={ posts } />
+</BaseLayout>

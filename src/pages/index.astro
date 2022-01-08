@@ -1,0 +1,15 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PostList from '@components/PostList.astro';
+import { sortPostByDate } from '@utils/index.ts';
+
+const posts = Astro.fetchContent('../posts/*.md');
+posts.sort(sortPostByDate)
+const recentPosts = posts.slice(0,3);
+
+---
+<BaseLayout>
+    <h1>Recent Posts</h1>
+    <PostList posts={ recentPosts } />
+    More posts can be found in <a href="/posts">the archive.</a>
+</BaseLayout>

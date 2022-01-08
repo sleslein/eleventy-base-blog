@@ -1,0 +1,21 @@
+---
+import metaData from '../data/metadata.json'
+import Header from '@components/Header.astro'
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{metaData.title}</title>
+    <meta name="description" content={metaData.description}>
+    <link rel="stylesheet" type="text/css" href={Astro.resolve('../styles/main.css')} />
+  </head>
+  <body>
+    <Header />
+    <main>
+        <slot />
+    </main>
+  </body>
+</html>
