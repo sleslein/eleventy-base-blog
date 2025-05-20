@@ -1,12 +1,11 @@
 ---
 import PostListItem from './PostListItem.astro'
-import { sortPostByDate } from '@utils/index.ts';
 
-export interface PostList { posts: typeof PostListItem[] };
+export interface Props {
+  posts: any[];
+}
 
-const { posts } = Astro.props
-posts.sort(sortPostByDate);
-
+const { posts } = Astro.props;
 ---
 
 <style>

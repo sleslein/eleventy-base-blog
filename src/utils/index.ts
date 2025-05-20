@@ -1,13 +1,9 @@
-export function getPostFileName(post: any): string {
-    return post.file.pathname.split('/').pop().split('.').shift();
+export function formatDate(date: Date): string {
+  const options = { year: "numeric", month: 'short', day: "numeric" } as const;
+  const formatter = new Intl.DateTimeFormat('en-US', options);
+  return formatter.format(date);
 }
 
-export function sortPostByDate(post1, post2) {
-    return post1.date < post2.date ? 1 : -1;
-}
-export function formatDate(date) {
-    const options = { year: "numeric", month: 'short', day: "numeric", } as const;
-    const dt = new Date(date)
-    const formatter = new Intl.DateTimeFormat('en-US', options);
-    return formatter.format(dt);
+export function sortPostByDate(a: any, b: any): number {
+  return new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf();
 }

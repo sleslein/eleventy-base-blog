@@ -1,6 +1,16 @@
 ---
-import metaData from '../data/metadata.json'
-import Header from '@components/Header.astro'
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+import Header from '../components/Header.astro';
+import '../styles/main.css';
+
+const { 
+  title = import.meta.env.PUBLIC_SITE_TITLE || "Shea Leslein",
+  description = import.meta.env.PUBLIC_SITE_DESCRIPTION || "Shea Leslein's Blog"
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -8,14 +18,15 @@ import Header from '@components/Header.astro'
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{metaData.title}</title>
-    <meta name="description" content={metaData.description}>
-    <link rel="stylesheet" type="text/css" href={Astro.resolve('../styles/main.css')} />
+    <title>{title}</title>
+    <meta name="description" content={description}>
+    <link rel="canonical" href={new URL(Astro.url.pathname, import.meta.env.PUBLIC_SITE_URL).toString()}>
+    <meta name="generator" content={Astro.generator}>
   </head>
   <body>
     <Header />
     <main>
-        <slot />
+      <slot />
     </main>
   </body>
 </html>
