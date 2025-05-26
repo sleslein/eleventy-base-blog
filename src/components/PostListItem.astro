@@ -1,17 +1,20 @@
 ---
 import PostTag from './PostTag.astro';
-import { getPostFileName, formatDate } from '@utils/index.ts';
+import { formatDate } from '../utils/index.ts';
 
-
-export interface PostListItem {
-    url: string;
-    title: string;
-    date: string;
-    tags?: string[];
+export interface Props {
+  post: {
+    slug: string;
+    data: {
+      title: string;
+      date: Date;
+      tags?: string[];
+    };
+  };
 }
 
-const { post } = Astro.props
-const url = `/posts/${getPostFileName(post)}`;
+const { post } = Astro.props;
+const url = `/posts/${post.slug}`;
 ---
 
 <style>
@@ -39,9 +42,9 @@ const url = `/posts/${getPostFileName(post)}`;
 </style>
 
 <li>
-    <a href={`${url}`}>{post.title}</a>
-    <span class="date">{formatDate(post.date)}</span>
-    {post?.tags.map((tag) => {
+    <a href={url}>{post.data.title}</a>
+    <span class="date">{formatDate(post.data.date)}</span>
+    {post.data.tags?.map((tag) => {
         return (
             <PostTag>{tag}</PostTag>
         );

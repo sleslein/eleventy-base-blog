@@ -1,21 +1,13 @@
 ---
-import BaseLayout from '@layouts/BaseLayout.astro'
-import PostList from '@components/PostList.astro'
-import { sortPostByDate } from '@utils/index.ts';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostList from '../../components/PostList.astro';
+import { getCollection } from "astro:content";
 
-const posts = Astro.fetchContent('../../posts/*.md');
-posts.sort(sortPostByDate);
-
+const allPosts = await getCollection("posts");
+const sortedPosts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
-<style>
-    ol {
-        padding-inline-start: 0;
-        list-style: none;
-    }
-</style>
-
-<BaseLayout>
+<BaseLayout title="Blog | Shea Leslein">
     <h1>Blog</h1>
-    <PostList posts={ posts } />
+    <PostList posts={sortedPosts} />
 </BaseLayout>
