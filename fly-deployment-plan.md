@@ -6,37 +6,11 @@ The site currently runs as a fully static Astro 5 build deployed to Netlify. The
 
 ---
 
-## Phase 1 — Switch Astro to hybrid SSR
+## ~~Phase 1 — Switch Astro to hybrid SSR~~ ✅ DONE
 
-**Files to change:** `astro.config.mjs`, `package.json`
+**Note:** Astro 5 removed `output: 'hybrid'`. `output: 'static'` now supports per-route SSR opt-in natively — it's the same behaviour. The adapter was added without changing the output mode.
 
-### 1a. Install the Node adapter
-```bash
-npm install @astrojs/node
-```
-
-### 1b. Update `astro.config.mjs`
-- Change `output: 'static'` → `output: 'hybrid'`
-  - `hybrid` pre-renders everything by default; future SQLite routes opt in to SSR with `export const prerender = false`
-- Add the node adapter in standalone mode (creates `dist/server/entry.mjs`)
-
-```js
-import { defineConfig } from 'astro/config';
-import node from '@astrojs/node';
-
-export default defineConfig({
-  site: 'https://shealeslein.com',
-  build: { format: 'directory' },
-  output: 'hybrid',
-  adapter: node({ mode: 'standalone' }),
-  markdown: {
-    shikiConfig: { theme: 'github-light', wrap: true }
-  },
-  integrations: []
-});
-```
-
-No changes needed to existing pages — `getStaticPaths()` in `[slug].astro` works identically in hybrid mode.
+Added `@astrojs/node` adapter (standalone mode) to `astro.config.mjs`. All blog pages remain pre-rendered; future SQLite routes use `export const prerender = false`. Verified locally via `node dist/server/entry.mjs` — all routes returned 200.
 
 ---
 
