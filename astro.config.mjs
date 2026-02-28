@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import node from '@astrojs/node';
 
 export default defineConfig({
   site: 'https://shealeslein.com',
@@ -6,6 +7,7 @@ export default defineConfig({
     format: 'directory'
   },
   output: 'static',
+  adapter: node({ mode: 'standalone' }),
   markdown: {
     shikiConfig: {
       theme: 'github-light',
