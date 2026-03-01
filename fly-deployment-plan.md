@@ -20,55 +20,9 @@ Created multi-stage `Dockerfile` (Node 24 builder + lean runtime) and `.dockerig
 
 ---
 
-## Phase 3 — Fly.io app setup
+## ~~Phase 3 — Fly.io app setup~~ ✅ DONE
 
-### 3a. Create the Fly app (no deploy yet)
-```bash
-fly launch --no-deploy
-```
-This creates the app, assigns a name, and generates a base `fly.toml`. When prompted, decline auto-generated Dockerfile (we have our own).
-
-### 3b. Edit `fly.toml`
-
-Replace generated content with:
-
-```toml
-app = '<your-app-name>'        # set by fly launch
-primary_region = 'iad'         # US East; change if preferred
-
-[build]
-
-[env]
-  PORT = "8080"
-
-[http_service]
-  internal_port = 8080
-  force_https = true
-  auto_stop_machines = "stop"   # machine stops when idle (saves ~$1.94/mo)
-  auto_start_machines = true    # wakes on incoming request
-  min_machines_running = 0
-
-[[vm]]
-  memory = "256mb"
-  cpu_kind = "shared"
-  cpus = 1
-
-[mounts]
-  source = "sqlite_data"
-  destination = "/data"         # mount point for future SQLite DB file
-```
-
-### 3c. Create the persistent volume (for future SQLite)
-```bash
-fly volumes create sqlite_data --region iad --size 1
-```
-1 GB is plenty for a SQLite blog DB. Costs ~$0.15/mo.
-
-### 3d. Handle environment variables
-Any values from `.env` that the app needs at runtime should be set as Fly secrets rather than baked into the image:
-```bash
-fly secrets set KEY=value
-```
+Created app `shealeslein-com` via `fly apps create`, wrote `fly.toml` (iad region, 256MB shared CPU, auto-stop when idle), and created a 1GB encrypted `sqlite_data` volume mounted at `/data` for future SQLite use.
 
 ---
 
