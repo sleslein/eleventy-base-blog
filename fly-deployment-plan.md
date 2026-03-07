@@ -26,7 +26,7 @@ Created app `shealeslein-com` via `fly apps create`, wrote `fly.toml` (iad regio
 
 ---
 
-## Phase 4 — Deploy and verify on fly.dev
+## ~~Phase 4 — Deploy and verify on fly.dev~~ ✅ DONE
 
 ```bash
 fly deploy
