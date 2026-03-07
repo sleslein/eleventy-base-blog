@@ -20,7 +20,7 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{title}</title>
     <meta name="description" content={description}>
-    <link rel="canonical" href={new URL(Astro.url.pathname, import.meta.env.PUBLIC_SITE_URL).toString()}>
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site).toString()}>
     <meta name="generator" content={Astro.generator}>
   </head>
   <body>
