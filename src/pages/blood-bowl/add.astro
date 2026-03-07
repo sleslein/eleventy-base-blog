@@ -1,0 +1,84 @@
+---
+export const prerender = false;
+
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { getDb } from '../../lib/db';
+
+let error = '';
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const key = form.get('key') as string;
+
+  if (key !== import.meta.env.BLOOD_BOWL_KEY) {
+    error = 'Invalid password.';
+  } else {
+    const db = getDb();
+    db.prepare(`
+      INSERT INTO games (opponent_name, opponent_race, result, score_for, score_against, date, league, notes)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      form.get('opponent_name'),
+      form.get('opponent_race'),
+      form.get('result'),
+      Number(form.get('score_for')),
+      Number(form.get('score_against')),
+      form.get('date'),
+      form.get('league') || null,
+      form.get('notes') || null,
+    );
+    return Astro.redirect('/blood-bowl/');
+  }
+}
+---
+
+<BaseLayout title="Add Game — Blood Bowl">
+  <h1>Add Game</h1>
+  {error && <p class="error">{error}</p>}
+  <form method="POST">
+    <label>Date <input type="date" name="date" required /></label>
+    <label>Opponent name <input type="text" name="opponent_name" required /></label>
+    <label>Opponent race <input type="text" name="opponent_race" required /></label>
+    <label>Result
+      <select name="result" required>
+        <option value="W">Win</option>
+        <option value="L">Loss</option>
+        <option value="D">Draw</option>
+      </select>
+    </label>
+    <label>Score for <input type="number" name="score_for" min="0" required /></label>
+    <label>Score against <input type="number" name="score_against" min="0" required /></label>
+    <label>League <input type="text" name="league" /></label>
+    <label>Notes <textarea name="notes"></textarea></label>
+    <label>Password <input type="password" name="key" required /></label>
+    <button type="submit">Add game</button>
+  </form>
+  <p><a href="/blood-bowl/">← Back</a></p>
+</BaseLayout>
+
+<style>
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 480px;
+  }
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  input, select, textarea {
+    padding: 0.4rem;
+    font-size: 1rem;
+  }
+  button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  .error {
+    color: red;
+    font-weight: bold;
+  }
+</style>
