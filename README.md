@@ -1,34 +1,65 @@
-# README
+# shealeslein.com
+
 [![Deployed on Fly.io](https://img.shields.io/badge/deployed%20on-Fly.io-blueviolet)](https://fly.io)
 
-This site is built using [Astro](https://astro.build)
+Personal blog built with [Astro 5](https://astro.build), deployed on [Fly.io](https://fly.io) via Docker.
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
+## Project Structure
 
 ```
 /
-├── public/
+├── public/                  # Static assets
 ├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+│   ├── components/          # Astro components (Header, PostList, PostTag, etc.)
+│   ├── content/
+│   │   ├── config.ts        # Content collection schema (Zod)
+│   │   └── posts/           # Markdown blog posts
+│   ├── data/
+│   │   └── metadata.json    # Site metadata (title, URL, author, feed config)
+│   ├── layouts/
+│   │   └── BaseLayout.astro # Root HTML wrapper
+│   ├── pages/
+│   │   ├── index.astro      # Home page (3 most recent posts)
+│   │   ├── about/
+│   │   └── posts/           # Post index + dynamic [slug] routes
+│   ├── styles/
+│   │   └── main.css         # Global styles (CSS variables, no preprocessor)
+│   └── utils/
+│       └── index.ts         # formatDate(), sortPostByDate()
+├── Dockerfile
+├── fly.toml
+└── astro.config.mjs
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Commands
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+| Command           | Action                                      |
+|:----------------- |:------------------------------------------- |
+| `npm install`     | Install dependencies                        |
+| `npm run dev`     | Start dev server at `localhost:4321`        |
+| `npm run build`   | Build production site to `./dist/`          |
+| `npm run preview` | Preview production build locally            |
+| `npm run check`   | Run Astro type checking                     |
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Adding a Post
 
-## 🧞 Commands
+Create a new `.md` file in `src/content/posts/` with the following frontmatter:
 
-All commands are run from the root of the project, from a terminal:
+```markdown
+---
+title: My Post Title
+date: 2026-01-01
+description: Optional description
+tags: [optional, tags]
+---
 
-| Command           | Action                                       |
-|:----------------  |:-------------------------------------------- |
-| `npm install`     | Installs dependencies                        |
-| `npm run dev`     | Starts local dev server at `localhost:3000`  |
-| `npm run build`   | Build your production site to `./dist/`      |
-| `npm run preview` | Preview your build locally, before deploying |
+Post content here.
+```
+
+## Deployment
+
+The site runs on Fly.io in the `iad` region using the `@astrojs/node` standalone adapter. All blog posts are pre-rendered at build time. Future dynamic routes can opt out of prerendering with `export const prerender = false`.
+
+```bash
+fly deploy
+```
