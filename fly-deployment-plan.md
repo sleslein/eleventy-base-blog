@@ -40,7 +40,7 @@ Verify:
 
 ---
 
-## Phase 5 — DNS cutover (when ready)
+## ~~Phase 5 — DNS cutover~~ ✅ DONE
 
 After testing the fly.dev URL for as long as desired:
 
