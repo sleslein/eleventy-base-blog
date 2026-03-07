@@ -1,5 +1,5 @@
 # README
-[![Netlify Status](https://api.netlify.com/api/v1/badges/18059148-1136-41a4-ac34-9b5d2acc3a3e/deploy-status)](https://app.netlify.com/sites/silly-hugle-b24010/deploys)
+[![Deployed on Fly.io](https://img.shields.io/badge/deployed%20on-Fly.io-blueviolet)](https://fly.io)
 
 This site is built using [Astro](https://astro.build)
 
