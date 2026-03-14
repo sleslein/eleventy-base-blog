@@ -4,6 +4,11 @@ export const prerender = false;
 import BaseLayout from '@layouts/BaseLayout.astro';
 import { getDb } from '../../lib/db';
 
+const db = getDb();
+const teams = db.prepare(`SELECT id, name FROM teams ORDER BY name`).all() as { id: number; name: string }[];
+const platforms = db.prepare(`SELECT id, name FROM platforms ORDER BY name`).all() as { id: number; name: string }[];
+const formats = db.prepare(`SELECT id, name, platform_id FROM formats ORDER BY name`).all() as { id: number; name: string; platform_id: number }[];
+
 let error = '';
 
 if (Astro.request.method === 'POST') {
@@ -13,18 +18,19 @@ if (Astro.request.method === 'POST') {
   if (key !== import.meta.env.BLOOD_BOWL_KEY) {
     error = 'Invalid password.';
   } else {
-    const db = getDb();
     db.prepare(`
-      INSERT INTO games (opponent_name, opponent_race, result, score_for, score_against, date, league, notes)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO games (opponent_name, my_race_id, opponent_race_id, result, score_for, score_against, date, platform_id, format_id, notes)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       form.get('opponent_name'),
-      form.get('opponent_race'),
+      Number(form.get('my_race_id')),
+      Number(form.get('opponent_race_id')),
       form.get('result'),
       Number(form.get('score_for')),
       Number(form.get('score_against')),
       form.get('date'),
-      form.get('league') || null,
+      Number(form.get('platform_id')),
+      Number(form.get('format_id')),
       form.get('notes') || null,
     );
     return Astro.redirect('/blood-bowl/');
@@ -38,7 +44,18 @@ if (Astro.request.method === 'POST') {
   <form method="POST">
     <label>Date <input type="date" name="date" required /></label>
     <label>Opponent name <input type="text" name="opponent_name" required /></label>
-    <label>Opponent race <input type="text" name="opponent_race" required /></label>
+    <label>My race
+      <select name="my_race_id" required>
+        <option value="">— select —</option>
+        {teams.map(t => <option value={t.id}>{t.name}</option>)}
+      </select>
+    </label>
+    <label>Opponent race
+      <select name="opponent_race_id" required>
+        <option value="">— select —</option>
+        {teams.map(t => <option value={t.id}>{t.name}</option>)}
+      </select>
+    </label>
     <label>Result
       <select name="result" required>
         <option value="W">Win</option>
@@ -48,7 +65,20 @@ if (Astro.request.method === 'POST') {
     </label>
     <label>Score for <input type="number" name="score_for" min="0" required /></label>
     <label>Score against <input type="number" name="score_against" min="0" required /></label>
-    <label>League <input type="text" name="league" /></label>
+    <label>Platform
+      <select name="platform_id" id="platform-select" required>
+        <option value="">— select —</option>
+        {platforms.map(p => <option value={p.id}>{p.name}</option>)}
+      </select>
+    </label>
+    <label>Format
+      <select name="format_id" id="format-select" required>
+        <option value="">— select platform first —</option>
+        {formats.map(f => (
+          <option value={f.id} data-platform={f.platform_id} class="format-option">{f.name}</option>
+        ))}
+      </select>
+    </label>
     <label>Notes <textarea name="notes"></textarea></label>
     <label>Password <input type="password" name="key" required /></label>
     <button type="submit">Add game</button>
@@ -82,3 +112,21 @@ if (Astro.request.method === 'POST') {
     font-weight: bold;
   }
 </style>
+
+<script>
+  const platformSelect = document.getElementById('platform-select') as HTMLSelectElement;
+  const formatSelect = document.getElementById('format-select') as HTMLSelectElement;
+  const formatOptions = formatSelect.querySelectorAll<HTMLOptionElement>('.format-option');
+
+  function updateFormats() {
+    const selectedPlatform = platformSelect.value;
+    formatSelect.value = '';
+    formatOptions.forEach(opt => {
+      opt.hidden = opt.dataset.platform !== selectedPlatform;
+    });
+    formatSelect.options[0].textContent = selectedPlatform ? '— select —' : '— select platform first —';
+  }
+
+  platformSelect.addEventListener('change', updateFormats);
+  updateFormats();
+</script>

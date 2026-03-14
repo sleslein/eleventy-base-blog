@@ -3,11 +3,13 @@ interface Game {
   id: number;
   date: string;
   opponent_name: string;
+  my_race: string;
   opponent_race: string;
   result: 'W' | 'L' | 'D';
   score_for: number;
   score_against: number;
-  league: string | null;
+  platform: string;
+  format: string;
   notes: string | null;
 }
 
@@ -26,10 +28,12 @@ const { games } = Astro.props;
       <tr>
         <th>Date</th>
         <th>Opponent</th>
-        <th>Race</th>
+        <th>My Race</th>
+        <th>Opp. Race</th>
         <th>Result</th>
         <th>Score</th>
-        <th>League</th>
+        <th>Platform</th>
+        <th>Format</th>
         <th>Notes</th>
       </tr>
     </thead>
@@ -38,12 +42,14 @@ const { games } = Astro.props;
         <tr>
           <td>{g.date}</td>
           <td>{g.opponent_name}</td>
+          <td>{g.my_race}</td>
           <td>{g.opponent_race}</td>
           <td class={g.result === 'W' ? 'w' : g.result === 'L' ? 'l' : 'd'}>
             {g.result}
           </td>
           <td>{g.score_for}–{g.score_against}</td>
-          <td>{g.league ?? '—'}</td>
+          <td>{g.platform}</td>
+          <td>{g.format}</td>
           <td>{g.notes ?? '—'}</td>
         </tr>
       ))}
