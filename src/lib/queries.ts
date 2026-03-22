@@ -78,6 +78,33 @@ export function getFormats(): Format[] {
   return getDb().prepare(`SELECT id, name, platform_id FROM formats ORDER BY name`).all() as Format[];
 }
 
+export function getGame(id: number): Game | undefined {
+  return getDb().prepare(`
+    SELECT
+      g.id,
+      g.date,
+      g.opponent_name,
+      mt.name  AS my_race,
+      ot.name  AS opponent_race,
+      g.result,
+      g.score_for,
+      g.score_against,
+      p.name   AS platform,
+      f.name   AS format,
+      g.notes
+    FROM games g
+    JOIN teams     mt ON mt.id = g.my_race_id
+    JOIN teams     ot ON ot.id = g.opponent_race_id
+    JOIN platforms p  ON p.id  = g.platform_id
+    JOIN formats   f  ON f.id  = g.format_id
+    WHERE g.id = ?
+  `).get(id) as Game | undefined;
+}
+
+export function deleteGame(id: number): void {
+  getDb().prepare(`DELETE FROM games WHERE id = ?`).run(id);
+}
+
 export function insertGame(data: InsertGameData): void {
   getDb().prepare(`
     INSERT INTO games (opponent_name, my_race_id, opponent_race_id, result, score_for, score_against, date, platform_id, format_id, notes)

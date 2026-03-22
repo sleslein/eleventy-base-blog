@@ -1,0 +1,99 @@
+---
+export const prerender = false;
+
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { getGame, deleteGame } from '../../lib/queries';
+
+let error = '';
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const key = form.get('key') as string;
+  const id = Number(form.get('id'));
+
+  if (key !== import.meta.env.BLOOD_BOWL_KEY) {
+    error = 'Invalid password.';
+  } else {
+    deleteGame(id);
+    return Astro.redirect('/blood-bowl/');
+  }
+}
+
+const id = Number(Astro.url.searchParams.get('id'));
+const game = id ? getGame(id) : undefined;
+
+if (!game) {
+  return Astro.redirect('/blood-bowl/');
+}
+---
+
+<BaseLayout title="Delete Game — Blood Bowl">
+  <h1>Delete Game</h1>
+  <p>Are you sure you want to delete this game?</p>
+  <table>
+    <tr><th>Date</th><td>{game.date}</td></tr>
+    <tr><th>Opponent</th><td>{game.opponent_name}</td></tr>
+    <tr><th>My race</th><td>{game.my_race}</td></tr>
+    <tr><th>Opp. race</th><td>{game.opponent_race}</td></tr>
+    <tr><th>Result</th><td>{game.result}</td></tr>
+    <tr><th>Score</th><td>{game.score_for}–{game.score_against}</td></tr>
+    <tr><th>Platform</th><td>{game.platform}</td></tr>
+    <tr><th>Format</th><td>{game.format}</td></tr>
+  </table>
+  {error && <p class="error">{error}</p>}
+  <form method="POST">
+    <input type="hidden" name="id" value={game.id} />
+    <label>Password <input type="password" name="key" required /></label>
+    <div class="actions">
+      <button type="submit" class="delete">Delete</button>
+      <a href="/blood-bowl/">Cancel</a>
+    </div>
+  </form>
+</BaseLayout>
+
+<style>
+  table {
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+  }
+  th, td {
+    padding: 0.25rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border, #eee);
+  }
+  th {
+    font-weight: bold;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 480px;
+  }
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  input {
+    padding: 0.4rem;
+    font-size: 1rem;
+  }
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  button.delete {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    background: red;
+    color: white;
+    border: none;
+  }
+  .error {
+    color: red;
+    font-weight: bold;
+  }
+</style>

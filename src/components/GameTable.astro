@@ -23,6 +23,7 @@ const { games } = Astro.props;
         <th>Platform</th>
         <th>Format</th>
         <th>Notes</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -39,6 +40,7 @@ const { games } = Astro.props;
           <td>{g.platform}</td>
           <td>{g.format}</td>
           <td>{g.notes ?? '—'}</td>
+          <td><a href={`/blood-bowl/delete?id=${g.id}`} class="delete-link">Delete</a></td>
         </tr>
       ))}
     </tbody>
@@ -62,4 +64,5 @@ const { games } = Astro.props;
   .w { color: green; font-weight: bold; }
   .l { color: red; font-weight: bold; }
   .d { color: goldenrod; font-weight: bold; }
+  .delete-link { color: red; font-size: 0.85rem; }
 </style>
