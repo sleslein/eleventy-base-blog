@@ -1,5 +1,8 @@
 import { defineConfig } from '@playwright/test';
 import path from 'path';
+import { config } from 'dotenv';
+
+config(); // load .env
 
 const TEST_PORT = 4399;
 const TEST_DB = path.join(process.cwd(), 'data', 'test.db');
