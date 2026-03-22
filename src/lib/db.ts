@@ -1,7 +1,11 @@
 import Database from 'better-sqlite3';
 import path from 'path';
 
-const DB_PATH = process.env.DB_PATH || path.join('/data', 'bloodbowl.db');
+const DB_PATH = process.env.DB_PATH || (
+  process.env.NODE_ENV === 'production'
+    ? path.join('/data', 'bloodbowl.db')
+    : path.join(process.cwd(), 'data', 'bloodbowl.db')
+);
 
 let db: Database.Database | null = null;
 
