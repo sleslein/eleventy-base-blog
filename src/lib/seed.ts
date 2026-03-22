@@ -43,7 +43,7 @@ for (const name of teams) {
 console.log(`Seeded ${teams.length} teams`);
 
 // Platforms
-const platforms = ['online', 'tabletop'];
+const platforms = ['Blood Bowl 3', 'Fumbbl', 'tabletop'];
 const insertPlatform = db.prepare(`INSERT OR IGNORE INTO platforms (name) VALUES (?)`);
 for (const name of platforms) {
   insertPlatform.run(name);
@@ -51,15 +51,21 @@ for (const name of platforms) {
 console.log(`Seeded ${platforms.length} platforms`);
 
 // Formats
-const onlineId = (db.prepare(`SELECT id FROM platforms WHERE name = 'online'`).get() as { id: number }).id;
+const bb3Id      = (db.prepare(`SELECT id FROM platforms WHERE name = 'Blood Bowl 3'`).get() as { id: number }).id;
+const fumbbId    = (db.prepare(`SELECT id FROM platforms WHERE name = 'Fumbbl'`).get() as { id: number }).id;
 const tabletopId = (db.prepare(`SELECT id FROM platforms WHERE name = 'tabletop'`).get() as { id: number }).id;
 
 const formats: { name: string; platform_id: number }[] = [
-  { name: 'league',          platform_id: onlineId },
-  { name: 'ladder',          platform_id: onlineId },
-  { name: 'arena',           platform_id: onlineId },
-  { name: 'community event', platform_id: onlineId },
-  { name: 'friendly',        platform_id: onlineId },
+  { name: 'league',          platform_id: bb3Id },
+  { name: 'ladder',          platform_id: bb3Id },
+  { name: 'resurrection',    platform_id: bb3Id },
+  { name: 'community event', platform_id: bb3Id },
+  { name: 'friendly',        platform_id: bb3Id },
+  { name: 'league',          platform_id: fumbbId },
+  { name: 'ladder',          platform_id: fumbbId },
+  { name: 'resurrection',    platform_id: fumbbId },
+  { name: 'community event', platform_id: fumbbId },
+  { name: 'friendly',        platform_id: fumbbId },
   { name: 'league',          platform_id: tabletopId },
   { name: 'tournament',      platform_id: tabletopId },
   { name: 'friendly',        platform_id: tabletopId },
