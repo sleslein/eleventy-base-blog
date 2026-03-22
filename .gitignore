@@ -22,3 +22,7 @@ yarn-error.log*
 
 # local dev database
 data/
+
+# Playwright output
+test-results/
+playwright-report/
