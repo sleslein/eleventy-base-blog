@@ -1,0 +1,145 @@
+---
+export const prerender = false;
+
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { getRawGame, updateGame, getTeams, getPlatforms, getFormats } from '../../lib/queries';
+
+const teams = getTeams();
+const platforms = getPlatforms();
+const formats = getFormats();
+
+let error = '';
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const key = form.get('key') as string;
+  const id = Number(form.get('id'));
+
+  if (key !== import.meta.env.BLOOD_BOWL_KEY) {
+    error = 'Invalid password.';
+  } else {
+    updateGame(id, {
+      opponent_name:    form.get('opponent_name') as string,
+      my_race_id:       Number(form.get('my_race_id')),
+      opponent_race_id: Number(form.get('opponent_race_id')),
+      result:           form.get('result') as 'W' | 'L' | 'D',
+      score_for:        Number(form.get('score_for')),
+      score_against:    Number(form.get('score_against')),
+      date:             form.get('date') as string,
+      platform_id:      Number(form.get('platform_id')),
+      format_id:        Number(form.get('format_id')),
+      notes:            form.get('notes') as string | null || null,
+    });
+    return Astro.redirect('/blood-bowl/');
+  }
+}
+
+const id = Number(Astro.url.searchParams.get('id'));
+const game = id ? getRawGame(id) : undefined;
+
+if (!game) {
+  return Astro.redirect('/blood-bowl/');
+}
+---
+
+<BaseLayout title="Edit Game — Blood Bowl">
+  <h1>Edit Game</h1>
+  {error && <p class="error">{error}</p>}
+  <form method="POST">
+    <input type="hidden" name="id" value={game.id} />
+    <label>Date <input type="date" name="date" value={game.date} required /></label>
+    <label>Opponent name <input type="text" name="opponent_name" value={game.opponent_name} required /></label>
+    <label>My race
+      <select name="my_race_id" required>
+        <option value="">— select —</option>
+        {teams.map(t => <option value={t.id} selected={t.id === game.my_race_id}>{t.name}</option>)}
+      </select>
+    </label>
+    <label>Opponent race
+      <select name="opponent_race_id" required>
+        <option value="">— select —</option>
+        {teams.map(t => <option value={t.id} selected={t.id === game.opponent_race_id}>{t.name}</option>)}
+      </select>
+    </label>
+    <label>Result
+      <select name="result" required>
+        <option value="W" selected={game.result === 'W'}>Win</option>
+        <option value="L" selected={game.result === 'L'}>Loss</option>
+        <option value="D" selected={game.result === 'D'}>Draw</option>
+      </select>
+    </label>
+    <label>Score for <input type="number" name="score_for" value={game.score_for} min="0" required /></label>
+    <label>Score against <input type="number" name="score_against" value={game.score_against} min="0" required /></label>
+    <label for="platform-select">Platform</label>
+    <select name="platform_id" id="platform-select" required>
+      <option value="">— select —</option>
+      {platforms.map(p => <option value={p.id} selected={p.id === game.platform_id}>{p.name}</option>)}
+    </select>
+    <label for="format-select">Format</label>
+    <select name="format_id" id="format-select" required>
+      <option value="">— select platform first —</option>
+      {formats.map(f => (
+        <option value={f.id} data-platform={f.platform_id} class="format-option" selected={f.id === game.format_id}>{f.name}</option>
+      ))}
+    </select>
+    <label>Notes <textarea name="notes">{game.notes}</textarea></label>
+    <label>Password <input type="password" name="key" required /></label>
+    <button type="submit">Save changes</button>
+  </form>
+  <p><a href="/blood-bowl/">← Cancel</a></p>
+</BaseLayout>
+
+<style>
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 480px;
+  }
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  input, select, textarea {
+    padding: 0.4rem;
+    font-size: 1rem;
+  }
+  button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  .error {
+    color: red;
+    font-weight: bold;
+  }
+</style>
+
+<script define:vars={{ currentPlatformId: game.platform_id, currentFormatId: game.format_id }}>
+  const platformSelect = document.getElementById('platform-select');
+  const formatSelect = document.getElementById('format-select');
+  const allFormatOptions = Array.from(formatSelect.querySelectorAll('.format-option'));
+
+  function updateFormats(preserveSelection) {
+    const selectedPlatform = platformSelect.value;
+
+    allFormatOptions.forEach(opt => opt.remove());
+    formatSelect.options[0].textContent = selectedPlatform ? '— select —' : '— select platform first —';
+
+    if (selectedPlatform) {
+      allFormatOptions
+        .filter(opt => opt.dataset.platform === selectedPlatform)
+        .forEach(opt => formatSelect.appendChild(opt));
+
+      if (preserveSelection) {
+        formatSelect.value = String(currentFormatId);
+      } else {
+        formatSelect.value = '';
+      }
+    }
+  }
+
+  platformSelect.addEventListener('change', () => updateFormats(false));
+  updateFormats(true);
+</script>

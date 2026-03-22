@@ -1,0 +1,73 @@
+---
+import type { Game } from '../lib/queries';
+
+interface Props {
+  games: Game[];
+}
+
+const { games } = Astro.props;
+---
+
+{games.length === 0 ? (
+  <p>No games recorded yet.</p>
+) : (
+  <table class="game-table" aria-label="Games">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Opponent</th>
+        <th>My Race</th>
+        <th>Opp. Race</th>
+        <th>Result</th>
+        <th>Score</th>
+        <th>Platform</th>
+        <th>Format</th>
+        <th>Notes</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {games.map(g => (
+        <tr>
+          <td>{g.date}</td>
+          <td>{g.opponent_name}</td>
+          <td>{g.my_race}</td>
+          <td>{g.opponent_race}</td>
+          <td class={g.result === 'W' ? 'w' : g.result === 'L' ? 'l' : 'd'}>
+            {g.result}
+          </td>
+          <td>{g.score_for}–{g.score_against}</td>
+          <td>{g.platform}</td>
+          <td>{g.format}</td>
+          <td>{g.notes ?? '—'}</td>
+          <td class="actions">
+            <a href={`/blood-bowl/edit?id=${g.id}`} class="edit-link">Edit</a>
+            <a href={`/blood-bowl/delete?id=${g.id}`} class="delete-link">Delete</a>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+)}
+
+<style>
+  .game-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .game-table th,
+  .game-table td {
+    padding: 0.35rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border, #eee);
+  }
+  .game-table th {
+    font-weight: bold;
+  }
+  .w { color: green; font-weight: bold; }
+  .l { color: red; font-weight: bold; }
+  .d { color: goldenrod; font-weight: bold; }
+  .actions { display: flex; gap: 0.75rem; }
+  .edit-link { font-size: 0.85rem; }
+  .delete-link { color: red; font-size: 0.85rem; }
+</style>

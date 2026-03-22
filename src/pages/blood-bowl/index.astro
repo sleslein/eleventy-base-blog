@@ -1,0 +1,39 @@
+---
+export const prerender = false;
+
+import BaseLayout from '@layouts/BaseLayout.astro';
+import StatsCard from '@components/StatsCard.astro';
+import GameTable from '@components/GameTable.astro';
+import { getGames } from '../../lib/queries';
+
+const games = getGames();
+
+const overall = { w: 0, l: 0, d: 0 };
+const raceMap = new Map<string, { w: number; l: number; d: number }>();
+
+for (const g of games) {
+  if (g.result === 'W') overall.w++;
+  else if (g.result === 'L') overall.l++;
+  else overall.d++;
+
+  if (!raceMap.has(g.opponent_race)) {
+    raceMap.set(g.opponent_race, { w: 0, l: 0, d: 0 });
+  }
+  const rec = raceMap.get(g.opponent_race)!;
+  if (g.result === 'W') rec.w++;
+  else if (g.result === 'L') rec.l++;
+  else rec.d++;
+}
+
+const byRace = Array.from(raceMap.entries())
+  .map(([race, rec]) => ({ race, ...rec }))
+  .sort((a, b) => a.race.localeCompare(b.race));
+---
+
+<BaseLayout title="Blood Bowl">
+  <h1>Blood Bowl</h1>
+  <StatsCard overall={overall} byRace={byRace} />
+  <h2>Games</h2>
+  <GameTable games={games} />
+  <p><a href="/blood-bowl/add">+ Add game</a></p>
+</BaseLayout>

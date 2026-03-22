@@ -1,0 +1,132 @@
+---
+export const prerender = false;
+
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { getTeams, getPlatforms, getFormats, insertGame } from '../../lib/queries';
+
+const teams = getTeams();
+const platforms = getPlatforms();
+const formats = getFormats();
+
+let error = '';
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const key = form.get('key') as string;
+
+  if (key !== import.meta.env.BLOOD_BOWL_KEY) {
+    error = 'Invalid password.';
+  } else {
+    insertGame({
+      opponent_name:    form.get('opponent_name') as string,
+      my_race_id:       Number(form.get('my_race_id')),
+      opponent_race_id: Number(form.get('opponent_race_id')),
+      result:           form.get('result') as 'W' | 'L' | 'D',
+      score_for:        Number(form.get('score_for')),
+      score_against:    Number(form.get('score_against')),
+      date:             form.get('date') as string,
+      platform_id:      Number(form.get('platform_id')),
+      format_id:        Number(form.get('format_id')),
+      notes:            form.get('notes') as string | null || null,
+    });
+    return Astro.redirect('/blood-bowl/');
+  }
+}
+---
+
+<BaseLayout title="Add Game — Blood Bowl">
+  <h1>Add Game</h1>
+  {error && <p class="error">{error}</p>}
+  <form method="POST">
+    <label>Date <input type="date" name="date" required /></label>
+    <label>Opponent name <input type="text" name="opponent_name" required /></label>
+    <label>My race
+      <select name="my_race_id" required>
+        <option value="">— select —</option>
+        {teams.map(t => <option value={t.id}>{t.name}</option>)}
+      </select>
+    </label>
+    <label>Opponent race
+      <select name="opponent_race_id" required>
+        <option value="">— select —</option>
+        {teams.map(t => <option value={t.id}>{t.name}</option>)}
+      </select>
+    </label>
+    <label>Result
+      <select name="result" required>
+        <option value="W">Win</option>
+        <option value="L">Loss</option>
+        <option value="D">Draw</option>
+      </select>
+    </label>
+    <label>Score for <input type="number" name="score_for" min="0" required /></label>
+    <label>Score against <input type="number" name="score_against" min="0" required /></label>
+    <label for="platform-select">Platform</label>
+    <select name="platform_id" id="platform-select" required>
+      <option value="">— select —</option>
+      {platforms.map(p => <option value={p.id}>{p.name}</option>)}
+    </select>
+    <label for="format-select">Format</label>
+    <select name="format_id" id="format-select" required>
+      <option value="">— select platform first —</option>
+      {formats.map(f => (
+        <option value={f.id} data-platform={f.platform_id} class="format-option">{f.name}</option>
+      ))}
+    </select>
+    <label>Notes <textarea name="notes"></textarea></label>
+    <label>Password <input type="password" name="key" required /></label>
+    <button type="submit">Add game</button>
+  </form>
+  <p><a href="/blood-bowl/">← Back</a></p>
+</BaseLayout>
+
+<style>
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 480px;
+  }
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  input, select, textarea {
+    padding: 0.4rem;
+    font-size: 1rem;
+  }
+  button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  .error {
+    color: red;
+    font-weight: bold;
+  }
+</style>
+
+<script>
+  const platformSelect = document.getElementById('platform-select') as HTMLSelectElement;
+  const formatSelect = document.getElementById('format-select') as HTMLSelectElement;
+  const allFormatOptions = Array.from(formatSelect.querySelectorAll<HTMLOptionElement>('.format-option'));
+
+  function updateFormats() {
+    const selectedPlatform = platformSelect.value;
+
+    // Remove all format options, then re-add only matching ones
+    allFormatOptions.forEach(opt => opt.remove());
+    formatSelect.options[0].textContent = selectedPlatform ? '— select —' : '— select platform first —';
+    formatSelect.value = '';
+
+    if (selectedPlatform) {
+      allFormatOptions
+        .filter(opt => opt.dataset.platform === selectedPlatform)
+        .forEach(opt => formatSelect.appendChild(opt));
+    }
+  }
+
+  platformSelect.addEventListener('change', updateFormats);
+  updateFormats();
+</script>

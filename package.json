@@ -7,12 +7,18 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui"
   },
   "devDependencies": {
-    "astro": "^5.18.0"
+    "@playwright/test": "^1.58.2",
+    "astro": "^5.18.0",
+    "dotenv": "^17.3.1"
   },
   "dependencies": {
-    "@astrojs/node": "^9.5.4"
+    "@astrojs/node": "^9.5.4",
+    "@types/better-sqlite3": "^7.6.13",
+    "better-sqlite3": "^12.6.2"
   }
 }
