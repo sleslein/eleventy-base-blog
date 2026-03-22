@@ -30,6 +30,20 @@ export interface Format {
   platform_id: number;
 }
 
+export interface RawGame {
+  id: number;
+  date: string;
+  opponent_name: string;
+  my_race_id: number;
+  opponent_race_id: number;
+  result: 'W' | 'L' | 'D';
+  score_for: number;
+  score_against: number;
+  platform_id: number;
+  format_id: number;
+  notes: string | null;
+}
+
 export interface InsertGameData {
   opponent_name: string;
   my_race_id: number;
@@ -101,8 +115,45 @@ export function getGame(id: number): Game | undefined {
   `).get(id) as Game | undefined;
 }
 
+export function getRawGame(id: number): RawGame | undefined {
+  return getDb().prepare(`
+    SELECT id, date, opponent_name, my_race_id, opponent_race_id, result,
+           score_for, score_against, platform_id, format_id, notes
+    FROM games WHERE id = ?
+  `).get(id) as RawGame | undefined;
+}
+
 export function deleteGame(id: number): void {
   getDb().prepare(`DELETE FROM games WHERE id = ?`).run(id);
+}
+
+export function updateGame(id: number, data: InsertGameData): void {
+  getDb().prepare(`
+    UPDATE games
+    SET opponent_name    = ?,
+        my_race_id       = ?,
+        opponent_race_id = ?,
+        result           = ?,
+        score_for        = ?,
+        score_against    = ?,
+        date             = ?,
+        platform_id      = ?,
+        format_id        = ?,
+        notes            = ?
+    WHERE id = ?
+  `).run(
+    data.opponent_name,
+    data.my_race_id,
+    data.opponent_race_id,
+    data.result,
+    data.score_for,
+    data.score_against,
+    data.date,
+    data.platform_id,
+    data.format_id,
+    data.notes,
+    id,
+  );
 }
 
 export function insertGame(data: InsertGameData): void {
