@@ -61,20 +61,18 @@ if (Astro.request.method === 'POST') {
     </label>
     <label>Score for <input type="number" name="score_for" min="0" required /></label>
     <label>Score against <input type="number" name="score_against" min="0" required /></label>
-    <label>Platform
-      <select name="platform_id" id="platform-select" required>
-        <option value="">— select —</option>
-        {platforms.map(p => <option value={p.id}>{p.name}</option>)}
-      </select>
-    </label>
-    <label>Format
-      <select name="format_id" id="format-select" required>
-        <option value="">— select platform first —</option>
-        {formats.map(f => (
-          <option value={f.id} data-platform={f.platform_id} class="format-option">{f.name}</option>
-        ))}
-      </select>
-    </label>
+    <label for="platform-select">Platform</label>
+    <select name="platform_id" id="platform-select" required>
+      <option value="">— select —</option>
+      {platforms.map(p => <option value={p.id}>{p.name}</option>)}
+    </select>
+    <label for="format-select">Format</label>
+    <select name="format_id" id="format-select" required>
+      <option value="">— select platform first —</option>
+      {formats.map(f => (
+        <option value={f.id} data-platform={f.platform_id} class="format-option">{f.name}</option>
+      ))}
+    </select>
     <label>Notes <textarea name="notes"></textarea></label>
     <label>Password <input type="password" name="key" required /></label>
     <button type="submit">Add game</button>
