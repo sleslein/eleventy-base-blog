@@ -116,15 +116,21 @@ if (Astro.request.method === 'POST') {
 <script>
   const platformSelect = document.getElementById('platform-select') as HTMLSelectElement;
   const formatSelect = document.getElementById('format-select') as HTMLSelectElement;
-  const formatOptions = formatSelect.querySelectorAll<HTMLOptionElement>('.format-option');
+  const allFormatOptions = Array.from(formatSelect.querySelectorAll<HTMLOptionElement>('.format-option'));
 
   function updateFormats() {
     const selectedPlatform = platformSelect.value;
-    formatSelect.value = '';
-    formatOptions.forEach(opt => {
-      opt.hidden = opt.dataset.platform !== selectedPlatform;
-    });
+
+    // Remove all format options, then re-add only matching ones
+    allFormatOptions.forEach(opt => opt.remove());
     formatSelect.options[0].textContent = selectedPlatform ? '— select —' : '— select platform first —';
+    formatSelect.value = '';
+
+    if (selectedPlatform) {
+      allFormatOptions
+        .filter(opt => opt.dataset.platform === selectedPlatform)
+        .forEach(opt => formatSelect.appendChild(opt));
+    }
   }
 
   platformSelect.addEventListener('change', updateFormats);
