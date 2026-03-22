@@ -1,6 +1,15 @@
 import { test, expect } from '@playwright/test';
+import Database from 'better-sqlite3';
+import path from 'path';
 
 const PASSWORD = process.env.BLOOD_BOWL_KEY ?? '';
+const TEST_DB = path.join(process.cwd(), 'data', 'test.db');
+
+test.beforeEach(() => {
+  const db = new Database(TEST_DB);
+  db.prepare('DELETE FROM games').run();
+  db.close();
+});
 
 async function addGame(page: any, opponentName: string) {
   await page.goto('/blood-bowl/add');
@@ -56,5 +65,5 @@ test('delete a game', async ({ page }) => {
   await page.click('button[type="submit"]');
 
   await expect(page).toHaveURL('/blood-bowl/');
-  await expect(page.locator('table.game-table')).not.toContainText(name);
+  await expect(page.locator('body')).not.toContainText(name);
 });
