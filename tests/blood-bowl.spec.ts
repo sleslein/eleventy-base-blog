@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const PASSWORD = process.env.BLOOD_BOWL_KEY ?? 'test';
+const PASSWORD = process.env.BLOOD_BOWL_KEY ?? '';
 
 async function addGame(page: any, opponentName: string) {
   await page.goto('/blood-bowl/add');
