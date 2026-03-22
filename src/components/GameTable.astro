@@ -1,17 +1,5 @@
 ---
-interface Game {
-  id: number;
-  date: string;
-  opponent_name: string;
-  my_race: string;
-  opponent_race: string;
-  result: 'W' | 'L' | 'D';
-  score_for: number;
-  score_against: number;
-  platform: string;
-  format: string;
-  notes: string | null;
-}
+import type { Game } from '../lib/queries';
 
 interface Props {
   games: Game[];

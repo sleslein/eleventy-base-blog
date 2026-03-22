@@ -2,12 +2,11 @@
 export const prerender = false;
 
 import BaseLayout from '@layouts/BaseLayout.astro';
-import { getDb } from '../../lib/db';
+import { getTeams, getPlatforms, getFormats, insertGame } from '../../lib/queries';
 
-const db = getDb();
-const teams = db.prepare(`SELECT id, name FROM teams ORDER BY name`).all() as { id: number; name: string }[];
-const platforms = db.prepare(`SELECT id, name FROM platforms ORDER BY name`).all() as { id: number; name: string }[];
-const formats = db.prepare(`SELECT id, name, platform_id FROM formats ORDER BY name`).all() as { id: number; name: string; platform_id: number }[];
+const teams = getTeams();
+const platforms = getPlatforms();
+const formats = getFormats();
 
 let error = '';
 
@@ -18,21 +17,18 @@ if (Astro.request.method === 'POST') {
   if (key !== import.meta.env.BLOOD_BOWL_KEY) {
     error = 'Invalid password.';
   } else {
-    db.prepare(`
-      INSERT INTO games (opponent_name, my_race_id, opponent_race_id, result, score_for, score_against, date, platform_id, format_id, notes)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(
-      form.get('opponent_name'),
-      Number(form.get('my_race_id')),
-      Number(form.get('opponent_race_id')),
-      form.get('result'),
-      Number(form.get('score_for')),
-      Number(form.get('score_against')),
-      form.get('date'),
-      Number(form.get('platform_id')),
-      Number(form.get('format_id')),
-      form.get('notes') || null,
-    );
+    insertGame({
+      opponent_name:    form.get('opponent_name') as string,
+      my_race_id:       Number(form.get('my_race_id')),
+      opponent_race_id: Number(form.get('opponent_race_id')),
+      result:           form.get('result') as 'W' | 'L' | 'D',
+      score_for:        Number(form.get('score_for')),
+      score_against:    Number(form.get('score_against')),
+      date:             form.get('date') as string,
+      platform_id:      Number(form.get('platform_id')),
+      format_id:        Number(form.get('format_id')),
+      notes:            form.get('notes') as string | null || null,
+    });
     return Astro.redirect('/blood-bowl/');
   }
 }

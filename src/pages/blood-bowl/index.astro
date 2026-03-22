@@ -4,24 +4,9 @@ export const prerender = false;
 import BaseLayout from '@layouts/BaseLayout.astro';
 import StatsCard from '@components/StatsCard.astro';
 import GameTable from '@components/GameTable.astro';
-import { getDb } from '../../lib/db';
+import { getGames } from '../../lib/queries';
 
-const db = getDb();
-
-const games = db.prepare(`
-  SELECT
-    g.*,
-    mt.name  AS my_race,
-    ot.name  AS opponent_race,
-    p.name   AS platform,
-    f.name   AS format
-  FROM games g
-  JOIN teams     mt ON mt.id = g.my_race_id
-  JOIN teams     ot ON ot.id = g.opponent_race_id
-  JOIN platforms p  ON p.id  = g.platform_id
-  JOIN formats   f  ON f.id  = g.format_id
-  ORDER BY g.date DESC
-`).all() as any[];
+const games = getGames();
 
 const overall = { w: 0, l: 0, d: 0 };
 const raceMap = new Map<string, { w: number; l: number; d: number }>();
